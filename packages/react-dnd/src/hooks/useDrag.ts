@@ -52,10 +52,12 @@ export function useDrag<
 	useIsomorphicLayoutEffect(() => {
 		connector.dragSourceOptions = spec.options || null
 		connector.reconnect()
+		return () => connector.disconnectDragSource()
 	}, [connector, spec.options])
 	useIsomorphicLayoutEffect(() => {
 		connector.dragPreviewOptions = spec.previewOptions || null
 		connector.reconnect()
+		return () => connector.disconnectDragPreview()
 	}, [connector, spec.previewOptions])
 	return [result, connectDragSource, connectDragPreview]
 }

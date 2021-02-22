@@ -103,7 +103,7 @@ export class TargetConnector implements Connector {
 		)
 	}
 
-	private disconnectDropTarget() {
+	public disconnectDropTarget() {
 		if (this.unsubscribeDropTarget) {
 			this.unsubscribeDropTarget()
 			this.unsubscribeDropTarget = undefined

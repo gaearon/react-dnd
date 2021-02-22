@@ -187,14 +187,14 @@ export class SourceConnector implements Connector {
 		)
 	}
 
-	private disconnectDragSource() {
+	public disconnectDragSource() {
 		if (this.dragSourceUnsubscribe) {
 			this.dragSourceUnsubscribe()
 			this.dragSourceUnsubscribe = undefined
 		}
 	}
 
-	private disconnectDragPreview() {
+	public disconnectDragPreview() {
 		if (this.dragPreviewUnsubscribe) {
 			this.dragPreviewUnsubscribe()
 			this.dragPreviewUnsubscribe = undefined
