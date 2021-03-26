@@ -111,12 +111,20 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	// public for test
+	public get window(): Window | undefined {
+		return this.options.window
+	}
+
+	// public for test
 	public get document(): Document | undefined {
-		return this.options.document
+		if (this.window) {
+			return this.window.document
+		}
+		return undefined
 	}
 
 	public setup(): void {
-		if (!this.document) {
+		if (!this.window) {
 			return
 		}
 
@@ -127,20 +135,20 @@ export class TouchBackendImpl implements Backend {
 		TouchBackendImpl.isSetUp = true
 
 		this.addEventListener(
-			this.document,
+			this.window,
 			'start',
 			this.getTopMoveStartHandler() as any,
 		)
 		this.addEventListener(
-			this.document,
+			this.window,
 			'start',
 			this.handleTopMoveStartCapture as any,
 			true,
 		)
-		this.addEventListener(this.document, 'move', this.handleTopMove as any)
-		this.addEventListener(this.document, 'move', this.handleTopMoveCapture, true)
+		this.addEventListener(this.window, 'move', this.handleTopMove as any)
+		this.addEventListener(this.window, 'move', this.handleTopMoveCapture, true)
 		this.addEventListener(
-			this.document,
+			this.window,
 			'end',
 			this.handleTopMoveEndCapture as any,
 			true,
@@ -148,7 +156,7 @@ export class TouchBackendImpl implements Backend {
 
 		if (this.options.enableMouseEvents && !this.options.ignoreContextMenu) {
 			this.addEventListener(
-				this.document,
+				this.window,
 				'contextmenu',
 				this.handleTopMoveEndCapture as any,
 			)
@@ -156,7 +164,7 @@ export class TouchBackendImpl implements Backend {
 
 		if (this.options.enableKeyboardEvents) {
 			this.addEventListener(
-				this.document,
+				this.window,
 				'keydown',
 				this.handleCancelOnEscape as any,
 				true,
@@ -165,7 +173,7 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	public teardown(): void {
-		if (!this.document) {
+		if (!this.window) {
 			return
 		}
 
@@ -173,25 +181,25 @@ export class TouchBackendImpl implements Backend {
 		this._mouseClientOffset = {}
 
 		this.removeEventListener(
-			this.document,
+			this.window,
 			'start',
 			this.handleTopMoveStartCapture as any,
 			true,
 		)
 		this.removeEventListener(
-			this.document,
+			this.window,
 			'start',
 			this.handleTopMoveStart as any,
 		)
 		this.removeEventListener(
-			this.document,
+			this.window,
 			'move',
 			this.handleTopMoveCapture,
 			true,
 		)
-		this.removeEventListener(this.document, 'move', this.handleTopMove as any)
+		this.removeEventListener(this.window, 'move', this.handleTopMove as any)
 		this.removeEventListener(
-			this.document,
+			this.window,
 			'end',
 			this.handleTopMoveEndCapture as any,
 			true,
@@ -199,7 +207,7 @@ export class TouchBackendImpl implements Backend {
 
 		if (this.options.enableMouseEvents && !this.options.ignoreContextMenu) {
 			this.removeEventListener(
-				this.document,
+				this.window,
 				'contextmenu',
 				this.handleTopMoveEndCapture as any,
 			)
@@ -207,7 +215,7 @@ export class TouchBackendImpl implements Backend {
 
 		if (this.options.enableKeyboardEvents) {
 			this.removeEventListener(
-				this.document,
+				this.window,
 				'keydown',
 				this.handleCancelOnEscape as any,
 				true,
@@ -218,7 +226,7 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	private addEventListener<K extends keyof EventName>(
-		subject: HTMLElement | Window | Document,
+		subject: HTMLElement | Window,
 		event: K,
 		handler: (e: any) => void,
 		capture?: boolean,
@@ -235,7 +243,7 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	private removeEventListener<K extends keyof EventName>(
-		subject: HTMLElement | Window | Document,
+		subject: HTMLElement | Window,
 		event: K,
 		handler: (e: any) => void,
 		capture?: boolean,
@@ -368,9 +376,9 @@ export class TouchBackendImpl implements Backend {
 		return this.handleTopMoveStartDelay
 	}
 
-	public handleTopMoveStart = (e: MouseEvent | TouchEvent): void => {
+	public handleTopMoveStart = (e: MouseEvent | TouchEvent): boolean => {
 		if (!eventShouldStartDrag(e as MouseEvent)) {
-			return
+			return false
 		}
 
 		// Don't prematurely preventDefault() here since it might:
@@ -386,6 +394,8 @@ export class TouchBackendImpl implements Backend {
 			this._mouseClientOffset = clientOffset
 		}
 		this.waitingForDelay = false
+
+		return true
 	}
 
 	public handleTopMoveStartDelay = (e: Event): void => {
@@ -397,10 +407,20 @@ export class TouchBackendImpl implements Backend {
 			e.type === eventNames.touch.start
 				? this.options.delayTouchStart
 				: this.options.delayMouseStart
-		this.timeout = (setTimeout(
-			this.handleTopMoveStart.bind(this, e as any),
-			delay,
-		) as any) as ReturnType<typeof setTimeout>
+
+		this.timeout = (setTimeout(() => {
+			const started = this.handleTopMoveStart(e as any)
+
+			if (this.options.delayedStartBeginsDrag && started) {
+				const moveStartSourceIds = this.moveStartSourceIds
+				this.moveStartSourceIds = undefined
+				this.actions.beginDrag(moveStartSourceIds, {
+					clientOffset: this._mouseClientOffset,
+					getSourceClientOffset: this.getSourceClientOffset,
+					publishSource: false,
+				})
+			}
+		}, delay) as any) as ReturnType<typeof setTimeout>
 		this.waitingForDelay = true
 	}
 

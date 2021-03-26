@@ -27,7 +27,8 @@ export const nativeTypesConfig: {
 	},
 	[NativeTypes.HTML]: {
 		exposeProperties: {
-			html: (dataTransfer: DataTransfer, matchesTypes: string[]): string => getDataFromDataTransfer(dataTransfer, matchesTypes, ''),
+			html: (dataTransfer: DataTransfer, matchesTypes: string[]): string =>
+				getDataFromDataTransfer(dataTransfer, matchesTypes, ''),
 		},
 		matchesTypes: ['Html', 'text/html'],
 	},

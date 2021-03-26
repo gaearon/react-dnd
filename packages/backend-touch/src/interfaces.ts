@@ -9,6 +9,7 @@ export interface EventName {
 export interface TouchBackendOptions {
 	delay?: number
 	delayTouchStart?: number
+	delayedStartBeginsDrag?: boolean
 	enableTouchEvents?: boolean
 	enableKeyboardEvents?: boolean
 	enableMouseEvents?: boolean
@@ -37,5 +38,4 @@ export enum ListenerType {
 
 export interface TouchBackendContext {
 	window?: Window
-	document?: Document
 }

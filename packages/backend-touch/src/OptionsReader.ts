@@ -14,6 +14,7 @@ export class OptionsReader implements TouchBackendOptions {
 	public scrollAngleRanges: AngleRange[] | undefined = undefined
 	public delayTouchStart: number
 	public delayMouseStart: number
+	public delayedStartBeginsDrag: boolean
 	public getDropTargetElementsAtPoint?: (
 		x: number,
 		y: number,
@@ -28,6 +29,7 @@ export class OptionsReader implements TouchBackendOptions {
 		this.context = context
 		this.delayTouchStart = incoming.delayTouchStart || incoming.delay || 0
 		this.delayMouseStart = incoming.delayMouseStart || incoming.delay || 0
+		this.delayedStartBeginsDrag = incoming.delayedStartBeginsDrag || false
 
 		Object.keys(incoming).forEach((key) => {
 			if ((incoming as any)[key] != null) {
@@ -46,14 +48,9 @@ export class OptionsReader implements TouchBackendOptions {
 	}
 
 	public get document(): Document | undefined {
-		if (this.context?.document) {
-			return this.context.document
-		}
-
 		if (this.window) {
 			return this.window.document
 		}
-
 		return undefined
 	}
 }
