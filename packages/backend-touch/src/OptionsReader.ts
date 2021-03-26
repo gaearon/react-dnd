@@ -5,35 +5,55 @@ import {
 } from './interfaces'
 
 export class OptionsReader implements TouchBackendOptions {
-	public enableTouchEvents = true
-	public enableMouseEvents = false
-	public enableKeyboardEvents = false
-	public ignoreContextMenu = false
-	public enableHoverOutsideTarget = false
-	public touchSlop = 0
-	public scrollAngleRanges: AngleRange[] | undefined = undefined
-	public delayTouchStart: number
-	public delayMouseStart: number
-	public getDropTargetElementsAtPoint?: (
-		x: number,
-		y: number,
-		elements: HTMLElement[],
-	) => HTMLElement[]
-	private context: TouchBackendContext
-
 	public constructor(
-		incoming: TouchBackendOptions,
-		context: TouchBackendContext,
-	) {
-		this.context = context
-		this.delayTouchStart = incoming.delayTouchStart || incoming.delay || 0
-		this.delayMouseStart = incoming.delayMouseStart || incoming.delay || 0
+		private args: Partial<TouchBackendOptions>,
+		private context: TouchBackendContext,
+	) {}
 
-		Object.keys(incoming).forEach((key) => {
-			if ((incoming as any)[key] != null) {
-				;(this as any)[key] = (incoming as any)[key]
-			}
-		})
+	public get delay(): number {
+		return this.args.delay ?? 0
+	}
+
+	public get scrollAngleRanges(): AngleRange[] | undefined {
+		return this.args.scrollAngleRanges
+	}
+
+	public get getDropTargetElementsAtPoint():
+		| ((x: number, y: number, elements: HTMLElement[]) => HTMLElement[])
+		| undefined {
+		return this.args.getDropTargetElementsAtPoint
+	}
+
+	public get ignoreContextMenu(): boolean {
+		return this.args.ignoreContextMenu ?? false
+	}
+
+	public get enableHoverOutsideTarget(): boolean {
+		return this.args.enableHoverOutsideTarget ?? false
+	}
+
+	public get enableKeyboardEvents(): boolean {
+		return this.args.enableKeyboardEvents ?? false
+	}
+
+	public get enableMouseEvents(): boolean {
+		return this.args.enableMouseEvents ?? false
+	}
+
+	public get enableTouchEvents(): boolean {
+		return this.args.enableTouchEvents ?? true
+	}
+
+	public get touchSlop(): number {
+		return this.args.touchSlop || 0
+	}
+
+	public get delayTouchStart(): number {
+		return this.args?.delayTouchStart ?? this.args?.delay ?? 0
+	}
+
+	public get delayMouseStart(): number {
+		return this.args?.delayMouseStart ?? this.args?.delay ?? 0
 	}
 
 	public get window(): Window | undefined {
@@ -55,5 +75,9 @@ export class OptionsReader implements TouchBackendOptions {
 		}
 
 		return undefined
+	}
+
+	public get rootElement(): Node | undefined {
+		return this.args?.rootElement || ((this.window as any) as Node)
 	}
 }

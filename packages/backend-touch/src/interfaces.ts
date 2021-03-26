@@ -7,16 +7,17 @@ export interface EventName {
 }
 
 export interface TouchBackendOptions {
-	delay?: number
-	delayTouchStart?: number
-	enableTouchEvents?: boolean
-	enableKeyboardEvents?: boolean
-	enableMouseEvents?: boolean
-	ignoreContextMenu?: boolean
-	enableHoverOutsideTarget?: boolean
-	delayMouseStart?: number
-	touchSlop?: number
+	delay: number
+	delayTouchStart: number
+	enableTouchEvents: boolean
+	enableKeyboardEvents: boolean
+	enableMouseEvents: boolean
+	ignoreContextMenu: boolean
+	enableHoverOutsideTarget: boolean
+	delayMouseStart: number
+	touchSlop: number
 	scrollAngleRanges?: AngleRange[]
+	rootElement: Node | undefined
 	getDropTargetElementsAtPoint?: (
 		x: number,
 		y: number,

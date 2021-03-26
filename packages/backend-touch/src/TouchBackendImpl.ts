@@ -70,7 +70,7 @@ export class TouchBackendImpl implements Backend {
 	public constructor(
 		manager: DragDropManager,
 		context: TouchBackendContext,
-		options: TouchBackendOptions,
+		options: Partial<TouchBackendOptions>,
 	) {
 		this.options = new OptionsReader(options, context)
 		this.actions = manager.getActions()
@@ -116,7 +116,8 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	public setup(): void {
-		if (!this.document) {
+		const root = this.options.rootElement
+		if (!root) {
 			return
 		}
 
@@ -126,21 +127,17 @@ export class TouchBackendImpl implements Backend {
 		)
 		TouchBackendImpl.isSetUp = true
 
+		this.addEventListener(root, 'start', this.getTopMoveStartHandler() as any)
 		this.addEventListener(
-			this.document,
-			'start',
-			this.getTopMoveStartHandler() as any,
-		)
-		this.addEventListener(
-			this.document,
+			root,
 			'start',
 			this.handleTopMoveStartCapture as any,
 			true,
 		)
-		this.addEventListener(this.document, 'move', this.handleTopMove as any)
-		this.addEventListener(this.document, 'move', this.handleTopMoveCapture, true)
+		this.addEventListener(root, 'move', this.handleTopMove as any)
+		this.addEventListener(root, 'move', this.handleTopMoveCapture, true)
 		this.addEventListener(
-			this.document,
+			root,
 			'end',
 			this.handleTopMoveEndCapture as any,
 			true,
@@ -148,7 +145,7 @@ export class TouchBackendImpl implements Backend {
 
 		if (this.options.enableMouseEvents && !this.options.ignoreContextMenu) {
 			this.addEventListener(
-				this.document,
+				root,
 				'contextmenu',
 				this.handleTopMoveEndCapture as any,
 			)
@@ -156,7 +153,7 @@ export class TouchBackendImpl implements Backend {
 
 		if (this.options.enableKeyboardEvents) {
 			this.addEventListener(
-				this.document,
+				root,
 				'keydown',
 				this.handleCancelOnEscape as any,
 				true,
@@ -165,7 +162,8 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	public teardown(): void {
-		if (!this.document) {
+		const root = this.options.rootElement
+		if (!root) {
 			return
 		}
 
@@ -173,25 +171,16 @@ export class TouchBackendImpl implements Backend {
 		this._mouseClientOffset = {}
 
 		this.removeEventListener(
-			this.document,
+			root,
 			'start',
 			this.handleTopMoveStartCapture as any,
 			true,
 		)
+		this.removeEventListener(root, 'start', this.handleTopMoveStart as any)
+		this.removeEventListener(root, 'move', this.handleTopMoveCapture, true)
+		this.removeEventListener(root, 'move', this.handleTopMove as any)
 		this.removeEventListener(
-			this.document,
-			'start',
-			this.handleTopMoveStart as any,
-		)
-		this.removeEventListener(
-			this.document,
-			'move',
-			this.handleTopMoveCapture,
-			true,
-		)
-		this.removeEventListener(this.document, 'move', this.handleTopMove as any)
-		this.removeEventListener(
-			this.document,
+			root,
 			'end',
 			this.handleTopMoveEndCapture as any,
 			true,
@@ -199,7 +188,7 @@ export class TouchBackendImpl implements Backend {
 
 		if (this.options.enableMouseEvents && !this.options.ignoreContextMenu) {
 			this.removeEventListener(
-				this.document,
+				root,
 				'contextmenu',
 				this.handleTopMoveEndCapture as any,
 			)
@@ -207,7 +196,7 @@ export class TouchBackendImpl implements Backend {
 
 		if (this.options.enableKeyboardEvents) {
 			this.removeEventListener(
-				this.document,
+				root,
 				'keydown',
 				this.handleCancelOnEscape as any,
 				true,
@@ -218,7 +207,7 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	private addEventListener<K extends keyof EventName>(
-		subject: HTMLElement | Window | Document,
+		subject: Node,
 		event: K,
 		handler: (e: any) => void,
 		capture?: boolean,
@@ -235,7 +224,7 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	private removeEventListener<K extends keyof EventName>(
-		subject: HTMLElement | Window | Document,
+		subject: Node,
 		event: K,
 		handler: (e: any) => void,
 		capture?: boolean,
@@ -278,14 +267,15 @@ export class TouchBackendImpl implements Backend {
 	}
 
 	public connectDropTarget(targetId: string, node: HTMLElement): Unsubscribe {
-		if (!this.document) {
+		const root = this.options.rootElement
+		if (!root) {
 			return (): void => {
 				/* noop */
 			}
 		}
 
 		const handleMove = (e: MouseEvent | TouchEvent) => {
-			if (!this.document || !this.monitor.isDragging()) {
+			if (!root || !this.monitor.isDragging()) {
 				return
 			}
 
@@ -316,7 +306,7 @@ export class TouchBackendImpl implements Backend {
 			 */
 			const droppedOn =
 				coords != null
-					? this.document.elementFromPoint(coords.x, coords.y)
+					? this.document?.elementFromPoint(coords.x, coords.y)
 					: undefined
 			const childMatch = droppedOn && node.contains(droppedOn)
 
@@ -328,13 +318,13 @@ export class TouchBackendImpl implements Backend {
 		/**
 		 * Attaching the event listener to the body so that touchmove will work while dragging over multiple target elements.
 		 */
-		this.addEventListener(this.document.body, 'move', handleMove as any)
+		this.addEventListener(root, 'move', handleMove as any)
 		this.targetNodes.set(targetId, node)
 
 		return (): void => {
 			if (this.document) {
 				this.targetNodes.delete(targetId)
-				this.removeEventListener(this.document.body, 'move', handleMove as any)
+				this.removeEventListener(root, 'move', handleMove as any)
 			}
 		}
 	}

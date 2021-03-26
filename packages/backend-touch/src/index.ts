@@ -6,7 +6,7 @@ export * from './TouchBackendImpl'
 export const TouchBackend: BackendFactory = function createBackend(
 	manager: DragDropManager,
 	context: TouchBackendContext = {},
-	options: TouchBackendOptions = {},
+	options: Partial<TouchBackendOptions> = {},
 ): TouchBackendImpl {
 	return new TouchBackendImpl(manager, context, options)
 }
