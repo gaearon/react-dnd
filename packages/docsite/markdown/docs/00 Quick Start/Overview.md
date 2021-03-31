@@ -113,7 +113,7 @@ Now let's talk about how these pieces come together in your components. You have
 
 ### Hooks
 
-Modern React applications have replaced the Higher-Order-Component pattern with hooks. Hooks are a feature of React, introduced in 16.8, that allow for developers to write stateful function components. They also fantastic for managing stateful components, and also for interacting with external stateful systems (\***cough**\* like a Drag-and-Drop engine \***cough**\*).
+Modern React applications have replaced the Higher-Order-Component pattern with hooks. Hooks are a feature of React, introduced in 16.8, that allow for developers to write stateful function components. They are also fantastic for managing stateful components, and also for interacting with external stateful systems (\***cough**\* like a Drag-and-Drop engine \***cough**\*).
 
 If you are unfamiliar with React hooks, refer to the React blog post, [Introducing Hooks](https://reactjs.org/docs/hooks-intro.html).
 
