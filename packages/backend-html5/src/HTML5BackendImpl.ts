@@ -323,7 +323,7 @@ export class HTML5BackendImpl implements Backend {
 			node &&
 				this.document &&
 				this.document.body &&
-				document.body.contains(node),
+				this.document.body.contains(node),
 		)
 	}
 
