@@ -1,4 +1,4 @@
-import { CSSProperties, FC } from 'react'
+import { CSSProperties, FC, DragEvent } from 'react'
 import { NativeTypes } from 'react-dnd-html5-backend'
 import { useDrop } from 'react-dnd'
 
@@ -9,7 +9,7 @@ const style: CSSProperties = {
 	padding: '2rem',
 	textAlign: 'center',
 }
-
+const preventDefault = (e: DragEvent) => e.preventDefault();
 export interface TargetBoxProps {
 	onDrop: (arg: { html: any }) => void
 }
@@ -34,7 +34,7 @@ export const TargetBox: FC<TargetBoxProps> = (props) => {
 
 	const isActive = canDrop && isOver
 	return (
-		<div ref={drop} style={style}>
+		<div ref={drop} style={style} onDrop={preventDefault}>
 			{isActive ? 'Release to drop' : 'Drag HTML here'}
 		</div>
 	)

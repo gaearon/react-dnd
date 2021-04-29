@@ -321,9 +321,9 @@ export class HTML5BackendImpl implements Backend {
 		// Check the node either in the main document or in the current context
 		return Boolean(
 			node &&
-				this.document &&
-				this.document.body &&
-				document.body.contains(node),
+			this.document &&
+			this.document.body &&
+			document.body.contains(node),
 		)
 	}
 
@@ -651,7 +651,6 @@ export class HTML5BackendImpl implements Backend {
 		this.dropTargetIds = []
 
 		if (this.isDraggingNativeItem()) {
-			e.preventDefault()
 			this.currentNativeSource?.loadDataTransfer(e.dataTransfer)
 		}
 
