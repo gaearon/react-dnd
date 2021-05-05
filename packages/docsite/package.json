@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^4.2.0",
-    "gatsby": "~2.32.9",
+    "gatsby": "~2.32.13",
     "gatsby-plugin-manifest": "^2.12.1",
     "gatsby-plugin-react-helmet": "^3.10.0",
     "gatsby-plugin-sharp": "^2.14.3",
