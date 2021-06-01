@@ -40,7 +40,7 @@ function Box() {
     {/* This is optional. The dragPreview will be attached to the dragSource by default */}
     <div ref={dragPreview} style={{ opacity: isDragging ? 0.5 : 1}}>
         {/* The drag ref marks this node as being the "pick-up" node */}
-        <div role="Handle" ref={drag}>
+        <div role="Handle" ref={drag} />
     </div>
   )
 }
