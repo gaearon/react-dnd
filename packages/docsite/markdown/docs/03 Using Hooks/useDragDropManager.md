@@ -8,7 +8,7 @@ _New to React DnD? [Read the overview](/docs/overview) before jumping into the d
 # useDragDropManager
 
 This hook provides a user with access into the DnD system. The DragDropManager instance
-is a singleton craeted by React DnD that contains access to state, monitors, the backend, etc..
+is a singleton created by React DnD that contains access to state, monitors, the backend, etc..
 
 ```jsx
 import { useDragDropManager } from 'react-dnd'

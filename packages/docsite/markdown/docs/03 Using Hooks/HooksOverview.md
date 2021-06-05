@@ -9,7 +9,7 @@ _New to React DnD? [Read the overview](/docs/overview) before jumping into the d
 
 The hooks-based React DnD API leverages one of the significant newer features of React. Hooks have dramatically impacted how most people write their React components, and are the recommended approach for writing stateful and effectful code within React. Prior to hooks, the React community poured a lot of effort into Higher Order Components and Decorator-based libraries. After hooks were introduced to the React community, there has been a dramatic shift in switching towards approaches and libraries that utilize hooks over decorator-based techniques.
 
-In the overview page, it is pointed out that Drag-and-drop interations are inherently _stateful_. Because of this React DnD has been designed to take advantage of the Flux data pattern and model drag-and-drop state using actions and reducers (independent of React). Hooks are the perfect way to utilize a stateful data source in React. In fact, this is the approach taken by many state-management libraries in React!
+In the overview page, it is pointed out that Drag-and-drop interactions are inherently _stateful_. Because of this React DnD has been designed to take advantage of the Flux data pattern and model drag-and-drop state using actions and reducers (independent of React). Hooks are the perfect way to utilize a stateful data source in React. In fact, this is the approach taken by many state-management libraries in React!
 
 There are three primary hooks that are provided to wire your components into React DnD, and a fourth is provided to give you a seam into React DnD (for testing or development purposes)
 
