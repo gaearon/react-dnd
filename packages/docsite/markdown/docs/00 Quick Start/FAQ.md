@@ -58,7 +58,7 @@ export default flow(DragSource(/* ... */), DropTarget(/* ... */))(YourComponent)
 
 ### How do I register a drop target for the native files?
 
-If you are using the [HTML5 backend](/docs//backends/html5), you can register a drop target for one of the `NativeTypes` it exports:
+If you are using the [HTML5 backend](/docs/backends/html5), you can register a drop target for one of the `NativeTypes` it exports:
 
 ```jsx
 import React from 'react'
