@@ -134,5 +134,7 @@ export interface DropTargetHookSpec<DragObject, DropResult, CollectedProps> {
 	/**
 	 * A function to collect rendering properties
 	 */
-	collect?: (monitor: DropTargetMonitor) => CollectedProps
+	collect?: (
+		monitor: DropTargetMonitor<DragObject, DropResult>,
+	) => CollectedProps
 }
