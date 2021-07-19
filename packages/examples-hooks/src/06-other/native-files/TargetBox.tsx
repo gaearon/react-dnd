@@ -24,10 +24,24 @@ export const TargetBox: FC<TargetBoxProps> = (props) => {
 					onDrop(item)
 				}
 			},
-			collect: (monitor: DropTargetMonitor) => ({
-				isOver: monitor.isOver(),
-				canDrop: monitor.canDrop(),
-			}),
+			canDrop(item: any) {
+				console.log("canDrop", item.files[0], item.items[0]);
+				return true;
+			},
+			hover(item: any) {
+				console.log("hover", item.files[0], item.items[0]);
+			},
+			collect: (monitor: DropTargetMonitor) => {
+				const item = monitor.getItem() as any;
+				if (item) {
+					console.log("collect", item.files[0], item.items[0]);
+				}
+
+				return {
+					isOver: monitor.isOver(),
+					canDrop: monitor.canDrop()
+				};
+			}
 		}),
 		[props],
 	)
